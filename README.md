@@ -1,4 +1,4 @@
-# MySQLproject
+# Database management project using R
 
       fill<-read.csv("/Users/topgyaltsering/Desktop/classes/csci 435 hw/435 midterm/fills16.csv",     sep=",",stringAsFactors=FALSE)
       Error in read.table(file = file, header = header, sep = sep, quote = quote,  : 
