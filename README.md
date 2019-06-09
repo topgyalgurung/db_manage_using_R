@@ -1,21 +1,10 @@
 # Database management project using R
 
-      fill<-read.csv("/Users/topgyaltsering/Desktop/classes/csci 435 hw/435 midterm/fills16.csv",     sep=",",stringAsFactors=FALSE)
-      Error in read.table(file = file, header = header, sep = sep, quote = quote,  : 
-        unused argument (stringAsFactors = FALSE)
-      > fill<-read.csv("/Users/topgyaltsering/Desktop/classes/csci 435 hw/435 midterm/fills16.csv", sep=",",stringSAsFactors=FALSE)
-      Error in read.table(file = file, header = header, sep = sep, quote = quote,  : 
-        unused argument (stringSAsFactors = FALSE)
-      > fills<-read.csv("C:/Users/admin/Desktop/fills.csv",sep=",",stringsAsFactors=FALSE)
-      Error in file(file, "rt") : cannot open the connection
-      In addition: Warning message:
-      In file(file, "rt") :
-        cannot open file 'C:/Users/admin/Desktop/fills.csv': No such file or directory
       > fill<-read.csv("/Users/topgyaltsering/Desktop/classes/csci 435 hw/435 midterm/fills16.csv")
-      > dim(fills)
-      Error: object 'fills' not found
+      
       > dim(fill)
       [1] 337   8
+      
       > head(fill)
         clid cust symbol side oQty fillQty    fillPx execid
       1  133   C8      F  BUY 2000      95   8.48753      1
@@ -24,9 +13,7 @@
       4  193   C7    BAC SELL 1500      71  27.92000      4
       5  127  C10      C SELL 5000     536  69.95000      5
       6  209   C2    IBM  BUY 2000    1000 140.85001      6
-      > sqldf("select * from fill where clid=176")
-      Error in sqldf("select * from fill where clid=176") : 
-        could not find function "sqldf"
+      
       > require(sqldf)
       Loading required package: sqldf
       Loading required package: gsubfn
@@ -39,6 +26,7 @@
         dlopen(/Library/Frameworks/R.framework/Resources/modules//R_X11.so, 6): Library not loaded: /opt/X11/lib/libSM.6.dylib
         Referenced from: /Library/Frameworks/R.framework/Resources/modules//R_X11.so
         Reason: image not found
+        
       > sqldf("select * from fill where clid=176")
         clid cust symbol side oQty fillQty fillPx execid
       1  176  C10     BA SELL 5000     556 355.98     38
@@ -50,8 +38,7 @@
       7  176  C10     BA SELL 5000     222 367.47    211
       8  176  C10     BA SELL 5000     890 360.11    222
       9  176  C10     BA SELL 5000     778 354.65    298
-      > sqldf("select cust,sum(fillQty) as totalVolume from fills group by cust")
-      Error in result_create(conn@ptr, statement) : no such table: fills
+ 
       > sqldf("select cust,sum(fillQty) as totalVolume from fill group by cust")
          cust totalVolume
       1    C1       17000
@@ -64,8 +51,7 @@
       8    C7        3000
       9    C8       24009
       10   C9       18502
-      > sqldf("select cust,totalVolume from (select cust, sum(fillQty) as totalVolume from fills group by cust) A order by totalVolume desc")
-      Error in result_create(conn@ptr, statement) : no such table: fills
+     
       > sqldf("select cust,totalVolume from (select cust, sum(fillQty) as totalVolume from fill group by cust) A order by totalVolume desc")
          cust totalVolume
       1    C8       24009
@@ -78,12 +64,15 @@
       8    C2       11498
       9    C4        5500
       10   C7        3000
+      
       > sqldf("select cust,totalVolume from (select cust, sum(fillQty) as totalVolume from fill group by cust) A order by totalVolume desc limit 1")
         cust totalVolume
       1   C8       24009
+      
       > sqldf("select max(totalVolume) from (select sum(fillQty) as totalVolume from fill group by cust)A")
         max(totalVolume)
       1            24009
+      
       > sqldf("select cust,sum(fillQty) from fill group by cust having sum(fillQty)=(select max(totalVolume)from (select sum(fillQty) as totalVolume from fill group by cust)A)")
         cust sum(fillQty)
       1   C8        24009
@@ -98,6 +87,7 @@
       7  176  C10     BA SELL 5000     222 367.47    211    81578.34
       8  176  C10     BA SELL 5000     890 360.11    222   320497.89
       9  176  C10     BA SELL 5000     778 354.65    298   275917.70
+      
       > sqldf(" select clid, sum(fillQty*fillPx) totalDollar from fill group by clid")
          clid totalDollar
       1   103    24655.27
@@ -150,6 +140,7 @@
       48  287  1846591.99
       49  292   658231.11
       50  295   284744.63
+      
       > head(sqldf("select clid,sum(fillQty *fillPx)totalDollar, case when sum(fillQty)>=min(oQty) then 'filled' else 'unfilled' end as status, sum(fillQty* fillPx)/sum(fillQty)avgPx from fill group by clid"),15)
          clid totalDollar   status       avgPx
       1   103    24655.27 unfilled   12.339975
@@ -167,14 +158,10 @@
       13  131  2627041.99   filled 1751.361328
       14  133    17646.57 unfilled    8.832118
       15  134    25502.84 unfilled   12.764185
+      
       > #fdkjladjgkdsg
       > #comments
-      > sqldf("select clid,sum(fillQty*fillPx)totalDollar, 'FILLED' as status, sum(fillQty*fillPx)/sum(fillQty) avgPx from fill group by clid having sum(fillQty)>=min(oQty) UNION select clid, sum(fillQty*fillPx) totalDollar,'UNFILLED" as status, sum(fillQty*fillPx)/sum(fillQty) avgPx from fill group by clid having sum(fillQty)<min(oQty)"")
-      Error: unexpected symbol in "sqldf("select clid,sum(fillQty*fillPx)totalDollar, 'FILLED' as status, sum(fillQty*fillPx)/sum(fillQty) avgPx from fill group by clid having sum(fillQty)>=min(oQty) UNION select clid, sum(fill"
-      > sqldf("select clid,sum(fillQty*fillPx)totalDollar, 'FILLED' as status, sum(fillQty*fillPx)/sum(fillQty) avgPx from fill group by clid having sum(fillQty)>=min(oQty) UNION select clid, sum(fillQty*fillPx) totalDollar,'UNFILLED" as status, sum(fillQty*fillPx)/sum(fillQty) avgPx from fill group by clid having sum(fillQty)<min(oQty)")
-      Error: unexpected symbol in "sqldf("select clid,sum(fillQty*fillPx)totalDollar, 'FILLED' as status, sum(fillQty*fillPx)/sum(fillQty) avgPx from fill group by clid having sum(fillQty)>=min(oQty) UNION select clid, sum(fill"
-      > sqldf("select clid,sum(fillQty*fillPx)totalDollar, 'FILLED' as status, sum(fillQty*fillPx)/sum(fillQty) avgPx from fill group by clid having sum(fillQty)>=min(oQty) UNION select clid, sum(fillQty*fillPx) totalDollar,'UNFILLED" as status, sum(fillQty*fillPx)/sum(fillQty) avgPx from fill group by clid having sum(fillQty)<min(oQty)")
-      Error: unexpected symbol in "sqldf("select clid,sum(fillQty*fillPx)totalDollar, 'FILLED' as status, sum(fillQty*fillPx)/sum(fillQty) avgPx from fill group by clid having sum(fillQty)>=min(oQty) UNION select clid, sum(fill"
+      
       > sqldf("select clid,sum(fillQty*fillPx)totalDollar, 'FILLED' as status, sum(fillQty*fillPx)/sum(fillQty) avgPx from fill group by clid having sum(fillQty)>=min(oQty) UNION select clid, sum(fillQty*fillPx) totalDollar,'UNFILLED' as status, sum(fillQty*fillPx)/sum(fillQty) avgPx from fill group by clid having sum(fillQty)<min(oQty)")
          clid totalDollar   status       avgPx
       1   103    24655.27 UNFILLED   12.339975
@@ -227,12 +214,11 @@
       48  287  1846591.99 UNFILLED  369.466185
       49  292   658231.11   FILLED  131.540989
       50  295   284744.63   FILLED  142.088140
+      
       > # Generate a report for each customer order, if it has been filled and the average
-      >  price at which it has been filled.
-      Error: unexpected symbol in " price at"
+     
       > # Generate a report for each customer order, if it has been filled and the # average price at which it has been filled.
-      > sqldf("select clid, CASE WHEN min(oQty) - sum(fillQty) < 1 THEN 'FILLED' WHEN min(oQty) - sum(fillQty) > 0 THEN 'UNFILLED' END as status , round(sum(fillQty * fillPx)/sum(fillQty),2) as AvgPx from fills03 group by clid ")
-      Error in result_create(conn@ptr, statement) : no such table: fills03
+      
       > sqldf("select clid, CASE WHEN min(oQty) - sum(fillQty) < 1 THEN 'FILLED' WHEN min(oQty) - sum(fillQty) > 0 THEN 'UNFILLED' END as status , round(sum(fillQty * fillPx)/sum(fillQty),2) as AvgPx from fill group by clid ")
          clid   status   AvgPx
       1   103 UNFILLED   12.34
@@ -285,6 +271,7 @@
       48  287 UNFILLED  369.47
       49  292   FILLED  131.54
       50  295   FILLED  142.09
+      
       > sqldf("select clid, 'FILLED' as status , round(sum(fillQty * fillPx)/sum(fillQty),2) as AvgPx from fill group by clid having min (oQty) - sum(fillQty) < 1 UNION select clid, 'UNFILLED' as status , round(sum(fillQty * fillPx)/sum(fillQty),2) as AvgPx from fill group by clid having min (oQty) - sum(fillQty) > 0")
          clid   status   AvgPx
       1   103 UNFILLED   12.34
@@ -337,9 +324,9 @@
       48  287 UNFILLED  369.47
       49  292   FILLED  131.54
       50  295   FILLED  142.09
+      
       > #5)  Generate a report of all orders which have NOT been filled #SUM(partial_fill_qty) < OrderQty.
-      >  sqldf("select clid, 'UNFILLED' as status , oQty, sum(fillQty) as filled, round(sum(fillQty * fillPx)/sum(fillQty),2) as AvgPx from fills03 group by clid having min (oQty) - sum(fillQty) > 0")
-      Error in result_create(conn@ptr, statement) : no such table: fills03
+      
       > sqldf("select clid, 'UNFILLED' as status , oQty, sum(fillQty) as filled, round(sum(fillQty * fillPx)/sum(fillQty),2) as AvgPx from fill group by clid having min (oQty) - sum(fillQty) > 0")
         clid   status oQty filled  AvgPx
       1  103 UNFILLED 2000   1998  12.34
@@ -351,6 +338,7 @@
       7  240 UNFILLED 1500   1496  12.51
       8  251 UNFILLED 2000   1998 370.09
       9  287 UNFILLED 5000   4998 369.47
+      
       > #6) For each order, find the min(fillPx) and max(fillPx) for the partialFills.
       > sqldf("select clid, round(max(fillPx) ,2) highpx, round(min(fillPx),2) lowpx from fill group by clid ")
          clid  highpx   lowpx
@@ -404,9 +392,8 @@
       48  287  386.47  350.05
       49  292  140.85  124.79
       50  295  151.31  124.79
+      
       > #7) ind the symbol for which the difference between min(fillPx) and max(fillPx) #is smallest?
-      > sqldf("select clid from fills03 where clid in ( select clid from fills03 group by clid having (max(fillPx) - min(fillPx) ) = ( select max(spread) from (select max(fillPx) - min(fillPx) as spread from fills03 group by clid) A ))")
-      Error in result_create(conn@ptr, statement) : no such table: fills03
       > sqldf("select clid from fill where clid in ( select clid from fill group by clid having (max(fillPx) - min(fillPx) ) = ( select max(spread) from (select max(fillPx) - min(fillPx) as spread from fill group by clid) A ))")
          clid
       1   114
@@ -419,6 +406,7 @@
       8   114
       9   114
       10  114
+      
       > sqldf("select clid from fill where clid in ( select clid from fill group by clid having (max(fillPx) - min(fillPx) ) = ( select max(spread) from (select max(fillPx) - min(fillPx) as spread from fill group by clid) A ))")
          clid
       1   114
@@ -431,6 +419,7 @@
       8   114
       9   114
       10  114
+      
       > #8) For each customer, generate the total money owed SUM (partial_fill_qty *
       >  # partial_fill_px )
       > sqldf ("select cust, sum(fillQty*fillPx) from fills03 group by cust ")
@@ -447,16 +436,16 @@
       8    C7            276106.1
       9    C8           6106288.0
       10   C9            505942.5
+      
       > #9) List the customers who transacted the most volume (bot or sold the most
       >  # number of shares, sum(fillqty) for all orders submitted by each customer, and
       >  #then find the customer with the maximum
       > sqldf(" select cust, sum(fillQty) from fill where cust in ( select cust from fill group by cust having sum(fillQty) = ( select max (volume) from ( select sum(fillQty) as volume from fill group by cust ) ) )")
         cust sum(fillQty)
       1   C8        24009
+      
       > #10) List the customers who transacted the most in dollar amount (bot or
       >  #sold,sum (fillqty* fillpx) and find the customer(s) with the highest)
-      > sqldf(" select cust, round(sum(fillQty*fillPx),2) dollarVolume from fills03 where cust in ( select cust from fills03 group by cust having sum(fillQty*fillPx) = ( select max (dollarVolume) from ( select sum(fillQty*fillPx) as dollarVolume from fill group by cust ) ) )")
-      Error in result_create(conn@ptr, statement) : no such table: fills03
       > sqldf(" select cust, round(sum(fillQty*fillPx),2) dollarVolume from fill where cust in ( select cust from fill group by cust having sum(fillQty*fillPx) = ( select max (dollarVolume) from ( select sum(fillQty*fillPx) as dollarVolume from fill group by cust ) ) )")
         cust dollarVolume
       1   C8      6106288
