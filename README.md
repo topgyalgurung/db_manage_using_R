@@ -7,60 +7,13 @@
       > head(fill)
     
       > require(sqldf)
-      Loading required package: sqldf
-      Loading required package: gsubfn
-      Loading required package: proto
-      Could not load tcltk.  Will use slower R code instead.
-      Loading required package: RSQLite
-      Warning message:
-      In doTryCatch(return(expr), name, parentenv, handler) :
-        unable to load shared object '/Library/Frameworks/R.framework/Resources/modules//R_X11.so':
-        dlopen(/Library/Frameworks/R.framework/Resources/modules//R_X11.so, 6): Library not loaded: /opt/X11/lib/libSM.6.dylib
-        Referenced from: /Library/Frameworks/R.framework/Resources/modules//R_X11.so
-        Reason: image not found
         
       > sqldf("select * from fill where clid=176")
-        clid cust symbol side oQty fillQty fillPx execid
-      1  176  C10     BA SELL 5000     556 355.98     38
-      2  176  C10     BA SELL 5000     667 385.44     77
-      3  176  C10     BA SELL 5000     111 360.11    131
-      4  176  C10     BA SELL 5000    1001 360.11    144
-      5  176  C10     BA SELL 5000     334 359.35    147
-      6  176  C10     BA SELL 5000     445 389.99    173
-      7  176  C10     BA SELL 5000     222 367.47    211
-      8  176  C10     BA SELL 5000     890 360.11    222
-      9  176  C10     BA SELL 5000     778 354.65    298
  
       > sqldf("select cust,sum(fillQty) as totalVolume from fill group by cust")
-         cust totalVolume
-      1    C1       17000
-      2   C10       13002
-      3    C2       11498
-      4    C3       20011
-      5    C4        5500
-      6    C5       15004
-      7    C6       12008
-      8    C7        3000
-      9    C8       24009
-      10   C9       18502
      
       > sqldf("select cust,totalVolume from (select cust, sum(fillQty) as totalVolume from fill group by cust) A order by totalVolume desc")
-         cust totalVolume
-      1    C8       24009
-      2    C3       20011
-      3    C9       18502
-      4    C1       17000
-      5    C5       15004
-      6   C10       13002
-      7    C6       12008
-      8    C2       11498
-      9    C4        5500
-      10   C7        3000
-      
-      > sqldf("select cust,totalVolume from (select cust, sum(fillQty) as totalVolume from fill group by cust) A order by totalVolume desc limit 1")
-        cust totalVolume
-      1   C8       24009
-      
+      > sqldf("select cust,totalVolume from (select cust, sum(fillQty) as totalVolume from fill group by cust) A order by totalVolume desc limit 1")   
       > sqldf("select max(totalVolume) from (select sum(fillQty) as totalVolume from fill group by cust)A")
         max(totalVolume)
       
